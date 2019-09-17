@@ -1,0 +1,24 @@
+---
+title: "Music Insights"
+author: "Veethacheng Thao"
+output: html_notebook
+---
+
+First, we need tidyverse to handle data importing and wrangling...
+
+```{r}
+install.packages("tidyverse")
+library("tidyverse")
+
+survey <- read_csv("https://raw.githubusercontent.com/introdsci/MusicSurvey/master/music-survey.csv")
+preferences <- read_csv("https://raw.githubusercontent.com/introdsci/MusicSurvey/master/preferences-survey.csv")
+```
+nrow()
+colnames()
+levels(df$col)
+
+cleaning data frame column names:
+```{r}
+colnames(survey)[colnames(survey)=="First, we are going to create a pseudonym for you to keep this survey anonymous (more or less). Which pseudonym generator would you prefer?"] <- "generator_name"
+colnames(survey)[colnames(survey)=="What is your pseudonym?"] <- "pseudonym"
+```

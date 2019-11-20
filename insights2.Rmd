@@ -1,0 +1,45 @@
+---
+title: "InSights part2"
+output: html_notebook
+---
+
+including part 1 of music insights
+```{r echo=FALSE, message=FALSE, error=FALSE, warning=FALSE, results='hide'}
+include <- function(library_name){
+  if( !(library_name %in% installed.packages()) )
+    install.packages(library_name) 
+  library(library_name, character.only=TRUE)
+}
+include("tidyverse")
+include("knitr")
+purl("insights.Rmd", output = "part1.r")
+source("part1.r")
+```
+counting how much instrument a person plays
+```{r}
+instrument <- count.fields(textConnection(survey$instrument_list), sep = ",")
+```
+Adding some continous data to help summarize each person
+```{r}
+Person$average_rating <- 
+  sapply(Person$pseudonym,
+    function(name){
+      rating <- Ratings$rating[Ratings$pseudonym==name]
+      return(mean(rating))
+    }
+  )
+```
+Linear regression on train set
+```{r}
+include("dplyr")
+include("caret")
+person2 <- tibble(pseudonym=survey$pseudonym, academic_level=survey$academic_level, academic_major=survey$academic_major, favorite_song_artist=survey$favorite_song_artist, favorite_song=survey$favortie_song, average_rating=Person$average_rating)
+people <- as_tibble(person2) %>% subset(!is.na(average_rating))
+set.seed(385)
+selection <- createDataPartition(people$average_rating, p = .70, list = FALSE)
+person_train <- people[selection,]
+person_test <- people[-selection,]
+person_trainmodel <- lm(average_rating ~ academic_level+academic_major, data = person_train)
+summary(person_trainmodel)
+```
+After running the model we know that academic level and academic major has no correlation with their average ratings.

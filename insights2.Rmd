@@ -1,6 +1,8 @@
 ---
 title: "InSights part2"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 including part 1 of music insights
